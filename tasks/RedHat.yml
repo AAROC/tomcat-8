@@ -7,6 +7,18 @@
   tags: tomcat
   assert: { that: "ansible_os_family == 'RedHat'" }
 
+- name: Get the AuthBind RPM
+  get_url:
+    url: https://github.com/tootedom/authbind-centos-rpm/blob/master/authbind/RPMS/x86_64/authbind-2.1.1-0.1.x86_64.rpm?raw=true
+    dest: /tmp/authbind-2.1.1-0.1.x86_64.rpm
+  tags: tomcat
+
+- name: Install AuthBind
+  package:
+    name: /tmp/authbind-2.1.1-0.1.x86_64.rpm
+    state: present
+  tags: tomcat
+
 - name: ensure tomcat group
   group:
     name: "{{ tomcat_group }}"
