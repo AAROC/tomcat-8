@@ -44,11 +44,18 @@
     dest: "{{ tomcat_home }}"
     owner: "{{ tomcat_user }}"
     validate_certs: false
-    extra_opts:
-      - "--strip=1"
+    extra_opts: "--strip=1"
   tags: tomcat
+  ignore_errors: true
 
-
+# We have to check here whether we are using systemd or sys-v
+# This is OS-dependent.
+- name: Push the init template
+  template:
+    src: "etc/init.d/{{ tomcat_service_name[ansible_os_family] }}.j2"
+    dest: "/etc/init.d/{{ tomcat_service_name[ansible_os_family] }}"
+    owner: root
+  tags: tomcat
 
 
 - name: Make tomcat enabled
