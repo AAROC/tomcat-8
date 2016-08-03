@@ -28,6 +28,15 @@
     state: present
   tags: tomcat
 
+- name: Ensure tomcat dir is present
+  file:
+    path: "{{ tomcat_home }}"
+    state: directory
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: "u=rwx,g=rwx,o=rx"
+  tags: tomcat
+
 - name: Unpack Tomcat 8 Package
   unarchive:
     copy: no
