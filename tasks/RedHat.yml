@@ -40,23 +40,31 @@
   tags: tomcat
 
 
+
+
 - name: Make tomcat enabled
-  service: name={{ tomcat_service_name }} enabled=yes
+  service:
+    name: "{{ tomcat_service_name[ansible_os_family] }}"
+    enabled: yes
   tags: tomcat
 
 - name: Activate authbind for tomcat
-  lineinfile: dest=/etc/default/tomcat8 line="AUTHBIND=yes" regexp="^AUTHBIND="
+  lineinfile:
+    dest: /etc/default/tomcat8
+    line: "AUTHBIND=yes"
+    regexp: "^AUTHBIND="
   when: tomcat_default_port|int <= 1024 or tomcat_default_port_ssl|int <= 1024
   tags: tomcat
 
 - name: Check authbind connection file
-  stat: path=/etc/authbind/byport/{{ tomcat_default_port }}
+  stat:
+    path: "/etc/authbind/byport/{{ tomcat_default_port }}"
   register: authfile
   tags: tomcat
 
 - name: Enable not default port on Debian
   file:
-    path: /etc/authbind/byport/{{ tomcat_default_port }}
+    path: "/etc/authbind/byport/{{ tomcat_default_port }}"
     mode: 0755
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_group }}"
@@ -66,13 +74,14 @@
   tags: tomcat
 
 - name: Check authbind ssl connection file
-  stat: path=/etc/authbind/byport/{{ tomcat_default_port_ssl }}
+  stat:
+    path: "/etc/authbind/byport/{{ tomcat_default_port_ssl }}"
   register: authfile_ssl
   tags: tomcat
 
 - name: Enable not default ssl port on Debian
   file:
-    path: /etc/authbind/byport/{{ tomcat_default_port_ssl }}
+    path: "/etc/authbind/byport/{{ tomcat_default_port_ssl }}"
     mode: 0755
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_group }}"
@@ -117,7 +126,12 @@
   tags: tomcat
 
 - name: Copy the keystore
-  copy: src={{ keystore }} dest={{ tomcat_keystore }}  mode=0644 owner={{ tomcat_user }} group={{ tomcat_group }}
+  copy:
+    src: "{{ keystore }}"
+    dest: "{{ tomcat_keystore }}"
+    mode: 0644
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
   when: keystore is defined
   notify: "{{ 'Restart tomcat'  if ansible_virtualization_type != 'docker' else 'Restart tomcat in docker' }}"
   tags: tomcat
@@ -131,7 +145,11 @@
   tags: tomcat
 
 - name: Fix keystore permission
-  file: path={{ tomcat_keystore }} mode=0644 owner={{ tomcat_user }} group={{ tomcat_group }}
+  file:
+    path: "{{ tomcat_keystore }}"
+    mode: 0644
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
   notify: "{{ 'Restart tomcat'  if ansible_virtualization_type != 'docker' else 'Restart tomcat in docker' }}"
   tags: tomcat
 
