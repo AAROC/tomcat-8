@@ -8,6 +8,8 @@ jvm_package:
   RedHat: 'java-1.8.0-openjdk.x86_64'
   Debian: 'default-jdk'
 
+tomcat_version: 8.5.4
+
 # Tomcat 8 package
 tomcat_package:
   RedHat: 'tomcat8'

@@ -28,9 +28,16 @@
     state: present
   tags: tomcat
 
-- name: Download Tomcat 8 Package
-  get_url:
-    url:
+- name: Unpack Tomcat 8 Package
+  unarchive:
+    copy: no
+    src: "http://www.us.apache.org/dist/tomcat/tomcat-8/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_home }}"
+    owner: "{{ tomcat_user }}"
+    validate_certs: false
+    extra_opts:
+      - "--strip=1"
+  tags: tomcat
 
 
 - name: Make tomcat enabled
