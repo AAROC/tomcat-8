@@ -5,7 +5,7 @@ ansible_become: yes
 
 # JVM package name. In debian Jessie this will install OpenJDK 7
 jvm_package:
-  RedHat: 'default-jdk'
+  RedHat: 'java-1.8.0-openjdk.x86_64'
   Debian: 'default-jdk'
 
 # Tomcat 8 package
@@ -23,6 +23,12 @@ tomcat_user: 'tomcat8'
 
 # Tomcat 8 group
 tomcat_group: 'tomcat8'
+
+#  Login shell
+tomcat_shell: '/bin/nologin'
+
+# home directory
+tomcat_home: '/opt/tomcat8'
 
 # Keystore for tomcat
 tomcat_keystore:

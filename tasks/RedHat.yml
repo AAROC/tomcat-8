@@ -1,21 +1,37 @@
 ---
 # Tasks for RPM-based distros
+# The tomcat 8 package is not in the repos , so you have to download it and install it yourself
+# See http://tomcat.apache.org/tomcat-8.0-doc/setup.html
+
 - name: Check OS
   tags: tomcat
   assert: { that: "ansible_os_family == 'RedHat'" }
 
-- debug:
-    var: jvm_package[ansible_os_family]
+- name: ensure tomcat group
+  group:
+    name: "{{ tomcat_group }}"
+    state: present
+
+- name: ensure tomcat user
+  user:
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    shell: "{{ tomcat_shell }}"
+    createhome: true
+    home: "{{ tomcat_home }}"
+    state: present
 
 - name: Install the JVM and tomcat
   yum:
     update_cache: yes
-    name: "{{ item }}"
+    name: "{{ jvm_package[ansible_os_family] }}"
     state: present
   tags: tomcat
-  with_items:
-    - "{{ jvm_package[ansible_os_family] }}"
-    - "{{ tomcat_package[ansible_os_family] }}"
+
+- name: Download Tomcat 8 Package
+  get_url:
+    url:
+
 
 - name: Make tomcat enabled
   service: name={{ tomcat_service_name }} enabled=yes
